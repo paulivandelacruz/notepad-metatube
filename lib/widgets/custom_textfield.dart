@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:metatube/utils/app_styles.dart';
+import 'package:metatube/utils/snackbar_utils.dart';
 
 
 class CustomTextField extends StatefulWidget {
@@ -21,6 +23,11 @@ class _CustomTextFieldState extends State<CustomTextField> {
   void dispose() {
     _focusNode.dispose();
     super.dispose();
+  }
+
+  void copyToClipboard(context, String text) {
+    Clipboard.setData(ClipboardData(text: text));
+    SnackBarUtils.showSnackBar(context, Icons.content_copy, 'Text copied to clipboard.');
   }
 
   @override
@@ -55,8 +62,11 @@ class _CustomTextFieldState extends State<CustomTextField> {
 
   IconButton _copyButton(BuildContext context) {
     return IconButton(
-      onPressed: () {},
+      onPressed: widget.controller.text.isNotEmpty 
+        ? () => copyToClipboard(context, widget.controller.text) 
+        : null,
       color: AppTheme.accent,
+      disabledColor: AppTheme.medium,
       splashRadius: 20,
       splashColor: AppTheme.accent,
       icon: const Icon(Icons.content_copy_rounded,),
